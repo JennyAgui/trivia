@@ -1,8 +1,10 @@
+import json
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
+
 
 from models import setup_db, Question, Category
 
@@ -58,19 +60,25 @@ def create_app(test_config=None):
   '''
 
   @app.route('/questions')
-  def retrieve_questions():
+  def get_questions():
     selection = Question.query.order_by(Question.id).all()
-    current_questions = paginate_questions(request, selection)
+    questions = paginate_questions(request, selection)
+    list_categories = Category.query.all()
+    categories = {}
+    #categories: type data = array
+    for category in list_categories:
+      categories[category.id] = category.type
 
-    if len(current_questions) == 0:
+    if len(questions) == 0:
       abort(404)
 
     return jsonify({
       'success': True,
-      'questions': current_questions,
-      'total_questions': len(Question.query.all())
+      'questions': questions,
+      'total_questions': len(Question.query.all()),
+      'categories': categories
     })
-
+# Not included currentCategory because Questionview has setup as null
   '''
   @TODO: 
   Create an endpoint to DELETE question using a question ID. 
@@ -129,6 +137,15 @@ def create_app(test_config=None):
   including 404 and 422. 
   '''
   
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+        "success": False, 
+        "error": 404,
+        "message": "Resource Not found"
+        }), 404
+
+
   return app
 
     
