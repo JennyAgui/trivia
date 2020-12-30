@@ -76,9 +76,10 @@ def create_app(test_config=None):
       'success': True,
       'questions': questions,
       'total_questions': len(Question.query.all()),
-      'categories': categories
+      'categories': categories,
+      'current_category': None
     })
-# Not included currentCategory because Questionview has setup as null
+
   '''
   @TODO: 
   Create an endpoint to DELETE question using a question ID. 
