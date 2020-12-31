@@ -24,7 +24,16 @@ class TriviaTestCase(unittest.TestCase):
             self.db.init_app(self.app)
             # create all tables
             self.db.create_all()
-    
+
+        # Test create_question    
+        self.new_question = {
+            'question': 'What is the best test? ',
+            'answer': 'El que se hace.',
+            'category': 2,
+            'difficulty': 3
+        }
+
+
     def tearDown(self):
         """Executed after reach test"""
         pass
@@ -60,14 +69,14 @@ class TriviaTestCase(unittest.TestCase):
     #-------------------------------------------
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/5')
+        res = self.client().delete('/questions/25')
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id == 5).one_or_none()
+        question = Question.query.filter(Question.id == 25).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['delete'], 5)
+        self.assertEqual(data['delete'], 25)
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
         self.assertEqual(question, None)
@@ -80,8 +89,20 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable')
 
+    #-------------------------------------------
+    # Unittest POST Handler request
+    #-------------------------------------------
 
+    def test_create_question(self):
+        res = self.client().post('/questions', json=self.new_question)
+        data = json.loads(res.data)
 
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(len(data['questions']))
+        self.assertTrue(len(data['categories']))
+    #    self.assertEqual(data['current_category'], None)
 
 
 
