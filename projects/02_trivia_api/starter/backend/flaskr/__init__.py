@@ -110,10 +110,6 @@ def create_app(test_config=None):
       abort(422)
 
 
-
-
-
-
   '''
   @TODO: 
   Create an endpoint to POST a new question, 
@@ -124,6 +120,49 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.  
   '''
+
+  @app.route('/questions', methods=['POST'])
+  def create_question():
+    body = request.get_json()
+# current categorie, me está dandp problemas con el tipo de dato.
+    new_question = body.get('question', None)
+    new_answer = body.get('answer', None)
+    new_difficulty= body.get('difficulty', None)
+    new_category= body.get('category', None)
+
+    current_category = Category.query.filter(Category.id == new_category).first()
+
+    try:
+      question = Question(question=new_question, answer=new_answer, difficulty=new_difficulty, category=current_category.id)
+      question.insert()
+
+      selection = Question.query.order_by(Question.id).all()
+      current_questions = paginate_questions(request, selection)
+
+      #current_category = Category.query.filter(Category.id==)
+      list_categories = Category.query.all()
+      categories = {}
+      for category in list_categories:
+        categories[category.id] = category.type
+
+      return jsonify({
+        'success': True,
+        'questions': current_questions,
+        'total_questions': len(Question.query.all()),
+        'categories': categories,
+        'current_category': current_category.id
+      })
+
+    except:
+      abort(422)
+    
+
+
+
+
+
+
+
 
   '''
   @TODO: 
