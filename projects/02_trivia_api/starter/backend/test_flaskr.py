@@ -69,14 +69,14 @@ class TriviaTestCase(unittest.TestCase):
     #-------------------------------------------
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/32')
+        res = self.client().delete('/questions/11')
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id == 32).one_or_none()
+        question = Question.query.filter(Question.id == 11).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['delete'], 32)
+        self.assertEqual(data['delete'], 11)
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
         self.assertEqual(question, None)
@@ -101,31 +101,32 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
-        self.assertTrue(len(data['categories']))
-    #    self.assertEqual(data['current_category'], None)
+        self.assertEqual(data['current_category'], 2)
 
 
     #-------------------------------------------
     # Unittest Search request (questions)
     #-------------------------------------------
     def test_question_search_with_results(self):
-        res = self.client().post('/questions/search', json={'searchTerm': 'papa'})
+        res = self.client().post('/questions', json={'searchTerm': 'hanks'})
         data = json.loads(res.data)
 
-        self.assertEqual(res.stauts.code, 200)
+        self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True )
         self.assertTrue(data['total_questions'])
-        self.assertEqual(len(data['questions']), 3)
+        self.assertEqual(len(data['questions']), 1)
+        self.assertEqual(data['current_category'], None)
 
 
     def test_get_question_search_without_results(self):
-        res = self.client().post('/questions/search', json={'searchTerm': 'ratio'})
+        res = self.client().post('/questions', json={'searchTerm': 'ratio'})
         data = json.loads(res.data)
 
-        self.assertEqual(res.stauts.code, 200)
+        self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True )
         self.assertEqual(data['total_questions'], 0)
         self.assertEqual(len(data['questions']), 0)
+        self.assertEqual(data['current_category'], None)
 
 
 
