@@ -44,7 +44,7 @@ class TriviaTestCase(unittest.TestCase):
     """
 
     #-------------------------------------------
-    # Unittest GET Handler request
+    # Unittest GET Handler request (questions)
     #-------------------------------------------
     def test_get_paginated_questions(self):
         res = self.client().get('/questions')
@@ -65,7 +65,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Resource Not found')
 
     #-------------------------------------------
-    # Unittest DELETE Handler request
+    # Unittest DELETE Handler request  (questions)
     #-------------------------------------------
 
     def test_delete_question(self):
@@ -90,7 +90,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Unprocessable')
 
     #-------------------------------------------
-    # Unittest POST Handler request
+    # Unittest POST Handler request (questions)
     #-------------------------------------------
 
     def test_create_question(self):

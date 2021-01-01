@@ -157,13 +157,6 @@ def create_app(test_config=None):
       abort(422)
     
 
-
-
-
-
-
-
-
   '''
   @TODO: 
   Create a POST endpoint to get questions based on a search term. 
@@ -174,6 +167,39 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
+  # Search
+
+  @app.route('/questions/search', methods=['POST'])
+  def search_question():
+    body = request.get_json()
+# current categorie, me está dandp problemas con el tipo de dato.
+    search_term = body.get('searchTerm', None)
+
+    try:
+         
+      selection = Question.query.filter(Question.question.ilike('%' + search_term + '%')).all()   
+
+      current_questions = paginate_questions(request, selection)
+
+      # current_category = Category.query.filter(Category.id == new_category).first()
+      # list_categories = Category.query.all()
+      # categories = {}
+      # for category in list_categories:
+      #   categories[category.id] = category.type
+
+
+
+      return jsonify({
+        'success': True,
+        'questions': current_questions,
+        'total_questions': len(selection) 
+      #  'current_category': 1
+      })
+
+    except:
+      abort(422)
+    
+
 
   '''
   @TODO: 
@@ -212,13 +238,13 @@ def create_app(test_config=None):
         }), 404
 
 
-  @app.errorhandler(422)
-  def unprocessable(error):
-    return jsonify({
-        "success": False, 
-        "error": 422,
-        "message": "Unprocessable"
-        }), 422
+  # @app.errorhandler(422)
+  # def unprocessable(error):
+  #   return jsonify({
+  #       "success": False, 
+  #       "error": 422,
+  #       "message": "Unprocessable"
+  #       }), 422
 
 
 
