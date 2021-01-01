@@ -173,12 +173,11 @@ def create_app(test_config=None):
   def search_question():
     body = request.get_json()
 # current categorie, me está dandp problemas con el tipo de dato.
-    search_term = body.get('searchTerm', None)
+
 
     try:
-         
+      search_term = body.get('searchTerm', None)
       selection = Question.query.filter(Question.question.ilike('%' + search_term + '%')).all()   
-
       current_questions = paginate_questions(request, selection)
 
       # current_category = Category.query.filter(Category.id == new_category).first()
@@ -186,8 +185,6 @@ def create_app(test_config=None):
       # categories = {}
       # for category in list_categories:
       #   categories[category.id] = category.type
-
-
 
       return jsonify({
         'success': True,
