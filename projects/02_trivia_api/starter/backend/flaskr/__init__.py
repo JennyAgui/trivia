@@ -184,6 +184,21 @@ def create_app(test_config=None):
   category to be shown. 
   '''
 
+  @app.route('/categories/<int:category_id>/questions', methods=['GET'])
+  def get_question_by_category(category_id):
+
+      current_category = Category.query.filter(Category.id == category_id).one_or_none()
+      selection = Question.query.filter(Question.category == current_category.id) 
+      current_questions = paginate_questions(request, selection)   
+
+
+      return jsonify({
+        'success': True,
+        'questions': current_questions,
+        'total_questions': len(selection.all()),
+        'current_category': current_category.id
+      })
+
   '''
   @TODO: 
   Create a POST endpoint to get questions to play the quiz. 
@@ -202,13 +217,13 @@ def create_app(test_config=None):
   including 404 and 422. 
   '''
   
-  @app.errorhandler(404)
-  def not_found(error):
-    return jsonify({
-        "success": False, 
-        "error": 404,
-        "message": "Resource Not found"
-        }), 404
+  # @app.errorhandler(404)
+  # def not_found(error):
+  #   return jsonify({
+  #       "success": False, 
+  #       "error": 404,
+  #       "message": "Resource Not found"
+  #       }), 404
 
 
   @app.errorhandler(422)
