@@ -69,14 +69,14 @@ class TriviaTestCase(unittest.TestCase):
     #-------------------------------------------
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/25')
+        res = self.client().delete('/questions/32')
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id == 25).one_or_none()
+        question = Question.query.filter(Question.id == 32).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['delete'], 25)
+        self.assertEqual(data['delete'], 32)
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
         self.assertEqual(question, None)
@@ -105,7 +105,27 @@ class TriviaTestCase(unittest.TestCase):
     #    self.assertEqual(data['current_category'], None)
 
 
+    #-------------------------------------------
+    # Unittest Search request (questions)
+    #-------------------------------------------
+    def test_question_search_with_results(self):
+        res = self.client().post('/questions/search', json={'searchTerm': 'papa'})
+        data = json.loads(res.data)
 
+        self.assertEqual(res.stauts.code, 200)
+        self.assertEqual(data['success'], True )
+        self.assertTrue(data['total_questions'])
+        self.assertEqual(len(data['questions']), 3)
+
+
+    def test_get_question_search_without_results(self):
+        res = self.client().post('/questions/search', json={'searchTerm': 'ratio'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.stauts.code, 200)
+        self.assertEqual(data['success'], True )
+        self.assertEqual(data['total_questions'], 0)
+        self.assertEqual(len(data['questions']), 0)
 
 
 
