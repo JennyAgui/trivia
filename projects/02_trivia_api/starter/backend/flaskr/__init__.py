@@ -124,34 +124,41 @@ def create_app(test_config=None):
   @app.route('/questions', methods=['POST'])
   def create_question():
     body = request.get_json()
-# current categorie, me está dandp problemas con el tipo de dato.
     new_question = body.get('question', None)
     new_answer = body.get('answer', None)
     new_difficulty= body.get('difficulty', None)
     new_category= body.get('category', None)
+    searchTerm = body.get('searchTerm', None)
 
     current_category = Category.query.filter(Category.id == new_category).first()
 
     try:
-      question = Question(question=new_question, answer=new_answer, difficulty=new_difficulty, category=current_category.id)
-      question.insert()
 
-      selection = Question.query.order_by(Question.id).all()
-      current_questions = paginate_questions(request, selection)
+      if searchTerm:
+        selection = Question.query.order_by(Question.id).filter(Question.question.ilike('%{}%'.format(searchTerm))) 
+        current_questions = paginate_questions(request, selection)       
+        
+        return jsonify({
+          'success': True,
+          'questions': current_questions,
+          'total_questions': len(selection.all()),
+          'current_category': None
+        })
 
-      #current_category = Category.query.filter(Category.id==)
-      list_categories = Category.query.all()
-      categories = {}
-      for category in list_categories:
-        categories[category.id] = category.type
+      else:
 
-      return jsonify({
-        'success': True,
-        'questions': current_questions,
-        'total_questions': len(Question.query.all()),
-        'categories': categories,
-        'current_category': current_category.id
-      })
+        question = Question(question=new_question, answer=new_answer, difficulty=new_difficulty, category=current_category.id)
+        question.insert()
+
+        selection = Question.query.order_by(Question.id).all()
+        current_questions = paginate_questions(request, selection)
+
+        return jsonify({
+          'success': True,
+          'questions': current_questions,
+          'total_questions': len(Question.query.all()),
+          'current_category': current_category.id
+        })
 
     except:
       abort(422)
@@ -167,36 +174,6 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
-  # Search
-
-  @app.route('/questions/search', methods=['POST'])
-  def search_question():
-    body = request.get_json()
-# current categorie, me está dandp problemas con el tipo de dato.
-
-
-    try:
-      search_term = body.get('searchTerm', None)
-      selection = Question.query.filter(Question.question.ilike('%' + search_term + '%')).all()   
-      current_questions = paginate_questions(request, selection)
-
-      # current_category = Category.query.filter(Category.id == new_category).first()
-      # list_categories = Category.query.all()
-      # categories = {}
-      # for category in list_categories:
-      #   categories[category.id] = category.type
-
-      return jsonify({
-        'success': True,
-        'questions': current_questions,
-        'total_questions': len(selection) 
-      #  'current_category': 1
-      })
-
-    except:
-      abort(422)
-    
-
 
   '''
   @TODO: 
@@ -206,7 +183,6 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that 
   category to be shown. 
   '''
-
 
   '''
   @TODO: 
@@ -235,13 +211,13 @@ def create_app(test_config=None):
         }), 404
 
 
-  # @app.errorhandler(422)
-  # def unprocessable(error):
-  #   return jsonify({
-  #       "success": False, 
-  #       "error": 422,
-  #       "message": "Unprocessable"
-  #       }), 422
+  @app.errorhandler(422)
+  def unprocessable(error):
+    return jsonify({
+        "success": False, 
+        "error": 422,
+        "message": "Unprocessable"
+        }), 422
 
 
 
