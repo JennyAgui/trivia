@@ -211,8 +211,8 @@ def create_app(test_config=None):
     for category in list_categories:
       categories[category.id] = category.type
 
-    # if len(categories) == 0:
-    #   abort(404)
+    if len(categories) == 0:
+      abort(404)
 
     return jsonify({
       'success': True,
@@ -232,9 +232,22 @@ def create_app(test_config=None):
   and shown whether they were correct or not. 
   '''
 
+  @app.route('/quizzes', methods=['POST'])
+  def play_quizz():
+      body = request.get_json()
+      # Obtiene una [] de id
+      previousQuestions = body.get('previous_questions', [])     
+     # inicia con null, me envía id y type (categoria)
+      quizCategory = body.get('quiz_category', None)   
+      
+      category_id = quizCategory['id']
+      question = Question.query.filter(Question.category == category_id).first()
 
-
-
+      
+      return jsonify({
+        'success': True,
+        'question': question.format()
+      })
 
 
   '''
