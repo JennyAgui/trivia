@@ -52,12 +52,7 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
- 
-  '''
-  @TODO: 
-  Create an endpoint to handle GET requests 
-  for all available categories.
-  '''
+
 
   @app.route('/questions')
   def get_questions():
@@ -200,6 +195,29 @@ def create_app(test_config=None):
 
     except:
       abort(422)
+ 
+  '''
+  @TODO: 
+  Create an endpoint to handle GET requests 
+  for all available categories.
+  '''
+  @app.route('/categories', methods=['GET'])
+  def get_categories():
+
+    
+    list_categories = Category.query.all()
+    categories = {}
+    #categories: type data = array
+    for category in list_categories:
+      categories[category.id] = category.type
+
+    # if len(categories) == 0:
+    #   abort(404)
+
+    return jsonify({
+      'success': True,
+      'categories': categories
+    })
 
 
   '''
