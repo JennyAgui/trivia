@@ -69,14 +69,14 @@ class TriviaTestCase(unittest.TestCase):
     #-------------------------------------------
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/11')
+        res = self.client().delete('/questions/110')
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id == 11).one_or_none()
+        question = Question.query.filter(Question.id == 110).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['delete'], 11)
+        self.assertEqual(data['delete'], 110)
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
         self.assertEqual(question, None)
@@ -128,6 +128,26 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(len(data['questions']), 0)
         self.assertEqual(data['current_category'], None)
 
+    #-------------------------------------------
+    # Unittest GET question by category 
+    #-------------------------------------------
+    def test_get_questions_by_category(self):
+        res = self.client().get('/categories/3/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)    
+        self.assertTrue(data['total_questions'])
+        self.assertEqual(len(data['questions']), 3)
+        self.assertEqual(data['current_category'], 3)
+
+    def test_422_sent_category_out_range(self):
+        res = self.client().get('/categories/0/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Unprocessable')
 
 
 

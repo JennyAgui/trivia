@@ -186,11 +186,10 @@ def create_app(test_config=None):
 
   @app.route('/categories/<int:category_id>/questions', methods=['GET'])
   def get_question_by_category(category_id):
-
+    try:
       current_category = Category.query.filter(Category.id == category_id).one_or_none()
       selection = Question.query.filter(Question.category == current_category.id) 
       current_questions = paginate_questions(request, selection)   
-
 
       return jsonify({
         'success': True,
@@ -198,6 +197,10 @@ def create_app(test_config=None):
         'total_questions': len(selection.all()),
         'current_category': current_category.id
       })
+
+    except:
+      abort(422)
+
 
   '''
   @TODO: 
@@ -211,19 +214,24 @@ def create_app(test_config=None):
   and shown whether they were correct or not. 
   '''
 
+
+
+
+
+
   '''
   @TODO: 
   Create error handlers for all expected errors 
   including 404 and 422. 
   '''
   
-  # @app.errorhandler(404)
-  # def not_found(error):
-  #   return jsonify({
-  #       "success": False, 
-  #       "error": 404,
-  #       "message": "Resource Not found"
-  #       }), 404
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+        "success": False, 
+        "error": 404,
+        "message": "Resource Not found"
+        }), 404
 
 
   @app.errorhandler(422)
@@ -233,7 +241,6 @@ def create_app(test_config=None):
         "error": 422,
         "message": "Unprocessable"
         }), 422
-
 
 
   return app
