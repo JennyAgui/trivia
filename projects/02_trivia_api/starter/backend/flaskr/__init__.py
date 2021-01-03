@@ -236,22 +236,66 @@ def create_app(test_config=None):
   def play_quizz():
       body = request.get_json()
       # Obtiene una [] de id
-      previousQuestions = body.get('previous_questions', [])     
-     # inicia con null, me envía id y type (categoria)
+      previousQuestions = body.get('previous_questions')     
+      # inicia con null, me envía id y type (categoria)
       quizCategory = body.get('quiz_category', None)   
-      
+        
       category_id = quizCategory['id']
-      list_question = Question.query.filter(Question.category == category_id).all()
 
-      randoms = list_question[random.randint(0, len(list_question)-1)]
-      question = Question.query.filter(Question.id == randoms.id ).first()
+      if int(category_id) == 0 and len(previousQuestions) == 0:
+        try: 
+          list_question = Question.query.all()
+          randoms = list_question[random.randint(0, len(list_question)-1)]
+          question = Question.query.filter(Question.id == randoms.id ).first()
 
-      
-      return jsonify({
-        'success': True,
-        'question': question.format()
-      })
+          return jsonify({
+            'success': True,
+            'question': question.format()
+          })
+        except:
+          abort(400)
+      elif int(category_id) != 0 and len(previousQuestions) == 0:
+        try:
+          list_question = Question.query.filter(Question.category == category_id).all()
+          randoms = list_question[random.randint(0, len(list_question)-1)]
+          question = Question.query.filter(Question.id == randoms.id ).first()
+          
+          return jsonify({
+            'success': True,
+            'question': question.format()
+          })
+        except:
+          abort(402)
 
+      elif int(category_id) == 0 and len(previousQuestions) != 0:
+        try: 
+          # References
+          # output = Question.query.filter_by(category=category['id']).filter(Question.id.notin_((previous_questions))).all()
+          # query = session.query(Post).filter(~Post.tags.any(Tag.name.in_(['dont', 'want', 'these'])))
+          list_question = Question.query.filter(Question.id.notin_((previousQuestions))).all()
+          randoms = list_question[random.randint(0, len(list_question)-1)]
+          question = Question.query.filter(Question.id == randoms.id ).first()
+
+          return jsonify({
+            'success': True,
+            'question': question.format()
+          })
+        except:
+          abort(422)
+
+      elif int(category_id) != 0 and len(previousQuestions) != 0:
+        try: 
+          
+          list_question = Question.query.filter(Question.category == category_id).filter(Question.id.notin_((previousQuestions))).all()
+          randoms = list_question[random.randint(0, len(list_question)-1)]
+          question = Question.query.filter(Question.id == randoms.id ).first()
+
+          return jsonify({
+            'success': True,
+            'question': question.format()
+          })
+        except:
+          abort(405)
 
   '''
   @TODO: 
