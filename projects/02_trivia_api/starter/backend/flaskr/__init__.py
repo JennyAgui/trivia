@@ -241,7 +241,10 @@ def create_app(test_config=None):
       quizCategory = body.get('quiz_category', None)   
       
       category_id = quizCategory['id']
-      question = Question.query.filter(Question.category == category_id).first()
+      list_question = Question.query.filter(Question.category == category_id).all()
+
+      randoms = list_question[random.randint(0, len(list_question)-1)]
+      question = Question.query.filter(Question.id == randoms.id ).first()
 
       
       return jsonify({
