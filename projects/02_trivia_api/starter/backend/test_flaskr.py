@@ -18,7 +18,7 @@ class TriviaTestCase(unittest.TestCase):
         self.database_path = "postgres://{}:{}@{}/{}".format('test_user', 'test', 'localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
-        # binds the app to the current context
+        # Binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
             self.db.init_app(self.app)
@@ -44,7 +44,7 @@ class TriviaTestCase(unittest.TestCase):
     """
 
     #-------------------------------------------
-    # Unittest GET Handler request (questions)
+    # Unittest Handler GET request (questions all categories)
     #-------------------------------------------
     def test_get_paginated_questions(self):
         res = self.client().get('/questions')
@@ -65,18 +65,18 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Resource Not found')
 
     #-------------------------------------------
-    # Unittest DELETE Handler request  (questions)
+    # Unittest Handler DELETE request  (questions)
     #-------------------------------------------
 
     def test_delete_question(self):
-        res = self.client().delete('/questions/110')
+        res = self.client().delete('/questions/49')
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id == 110).one_or_none()
+        question = Question.query.filter(Question.id == 49).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['delete'], 110)
+        self.assertEqual(data['delete'], 49)
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
         self.assertEqual(question, None)
@@ -90,7 +90,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Unprocessable')
 
     #-------------------------------------------
-    # Unittest POST Handler request (questions)
+    # Unittest Handler POST request (create new questions)
     #-------------------------------------------
 
     def test_create_question(self):
@@ -103,6 +103,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data['questions']))
         self.assertEqual(data['current_category'], 2)
 
+    # Fail case pending
 
     #-------------------------------------------
     # Unittest Search request (questions)
@@ -117,7 +118,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(len(data['questions']), 1)
         self.assertEqual(data['current_category'], None)
 
-
     def test_get_question_search_without_results(self):
         res = self.client().post('/questions', json={'searchTerm': 'ratio'})
         data = json.loads(res.data)
@@ -129,7 +129,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['current_category'], None)
 
     #-------------------------------------------
-    # Unittest GET question by category 
+    # Unittest Handler GET question by category 
     #-------------------------------------------
     def test_get_questions_by_category(self):
         res = self.client().get('/categories/3/questions')
@@ -150,7 +150,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Unprocessable')
 
     #-------------------------------------------
-    # Unittest GET all categories 
+    # Unittest Handler GET all categories 
     #-------------------------------------------
     def test_get_categories(self):
         res = self.client().get('/categories')
@@ -160,16 +160,33 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)       
         self.assertEqual(len(data['categories']), 6)
 
-#  Pending to implement fail test categories
+    def test_404_sent_not_categories(self):
+        res = self.client().get('/categories/0')
+        data = json.loads(res.data)
 
-    # def test_404_sent_requesting_valid_page(self):
-    #     res = self.client().get('/categories', json)
-    #     data = json.loads(res.data)
-    #     self.assertEqual(res.status_code, 404)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertEqual(data['message'], 'Resource Not found')
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Resource Not found')
 
+  #-------------------------------------------
+  # Unittest Handler POST request ( quizzes ) 
+  #-------------------------------------------
 
+    def test_play_quiz_whit_category(self):
+        res = self.client().post('/quizzes', json={"previous_questions": [],"quiz_category": {"type":"Art","id": "2"}})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question'])
+
+    def test_404_sent_not_questions_by_category(self):
+        res = self.client().post('/quizzes', json={"previous_questions": [],"quiz_category": {"type":"Sport","id": "6"}})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Resource Not found')
 
 
 # Make the tests conveniently executable

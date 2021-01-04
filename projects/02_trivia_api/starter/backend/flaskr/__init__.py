@@ -10,7 +10,7 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
   #-------------------------------------------
-  # This section before than create_app 
+  # Pagination section
   #-------------------------------------------
 def paginate_questions(request, selection):
   page = request.args.get('page', 1, type=int)
@@ -59,7 +59,7 @@ def create_app(test_config=None):
   Clicking on the page numbers should update the questions. 
   '''
   #-------------------------------------------
-  # Handler GET request (questions)
+  # Handler GET request (questions for all available categories)
   #-------------------------------------------
 
   @app.route('/questions')
@@ -138,7 +138,7 @@ def create_app(test_config=None):
   Try using the word "title" to start. 
   '''
   #-------------------------------------------
-  # Handler POST request (create questions) and search by term.
+  # Handler POST request (create new questions) and search by term.
   #-------------------------------------------
 
   @app.route('/questions', methods=['POST'])
@@ -247,11 +247,11 @@ def create_app(test_config=None):
   and shown whether they were correct or not. 
   '''
   #-------------------------------------------
-  # Handler POST request ( quizzez - play )
+  # Handler POST request ( quizzes ) to play the quiz
   #-------------------------------------------
 
   @app.route('/quizzes', methods=['POST'])
-  def play_quizz():
+  def play_quiz():
       body = request.get_json()
       # Get id [] (previous questions)
       previousQuestions = body.get('previous_questions')     
@@ -263,7 +263,7 @@ def create_app(test_config=None):
         try: 
           list_question = Question.query.all()
           randoms = list_question[random.randint(0, len(list_question)-1)]
-          question = Question.query.filter(Question.id == randoms.id ).first()
+          question = Question.query.filter(Question.id == randoms.id ).one_or_none()
 
           return jsonify({
             'success': True,
@@ -275,7 +275,7 @@ def create_app(test_config=None):
         try:
           list_question = Question.query.filter(Question.category == category_id).all()
           randoms = list_question[random.randint(0, len(list_question)-1)]
-          question = Question.query.filter(Question.id == randoms.id ).first()
+          question = Question.query.filter(Question.id == randoms.id ).one_or_none()
           
           return jsonify({
             'success': True,
@@ -288,7 +288,7 @@ def create_app(test_config=None):
         try: 
           list_question = Question.query.filter(Question.id.notin_((previousQuestions))).all()
           randoms = list_question[random.randint(0, len(list_question)-1)]
-          question = Question.query.filter(Question.id == randoms.id ).first()
+          question = Question.query.filter(Question.id == randoms.id ).one_or_none()
 
           return jsonify({
             'success': True,
@@ -301,14 +301,14 @@ def create_app(test_config=None):
         try:           
           list_question = Question.query.filter(Question.category == category_id).filter(Question.id.notin_((previousQuestions))).all()
           randoms = list_question[random.randint(0, len(list_question)-1)]
-          question = Question.query.filter(Question.id == randoms.id ).first()
+          question = Question.query.filter(Question.id == randoms.id ).one_or_none()
 
           return jsonify({
             'success': True,
             'question': question.format()
           })
         except:
-          abort(404)
+          abort(422)
 
       else:
           abort(422)        
