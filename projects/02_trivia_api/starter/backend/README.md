@@ -77,11 +77,14 @@ One note before you delve into your tasks: for each endpoint you are expected to
 ### Error Handling
 
 Errors are returned as JSON objects in the following format:
+```
 {
     "success": False, 
     "error": 400,
     "message": "Bad request"
 }
+```
+
 The API will return three error types when requests fail:
 -	400: Bad Request
 -	404: Resource Not found
@@ -196,9 +199,9 @@ The API will return three error types when requests fail:
     *	Can receive an extra attribute it allow get questions based on a search term. 
     *	It should return any questions for whom the search term is a substring of the question.
 
--	Without search term
+####	Without search term
 
-    *	Sample: curl -X POST -H "Content-Type: application/json" -d '{"question":"Where live your favorite author", "answer":"China", "difficulty":"3", "category":"1"}' http://127.0.0.1:5000/questions
+-	Sample: curl -X POST -H "Content-Type: application/json" -d '{"question":"Where live your favorite author", "answer":"China", "difficulty":"3", "category":"1"}' http://127.0.0.1:5000/questions
 
 ```
 {
@@ -280,9 +283,10 @@ The API will return three error types when requests fail:
 }
 ```
 
--	With search term
+####	With search term
 
-    *	curl -X POST -H "Content-Type: application/json" -d '{"question":"Where live your favorite author", "answer":"China", "difficulty":"3", "category":"1", "searchTerm":"title"}' http://127.0.0.1:5000/questions
+- Sample:	curl -X POST -H "Content-Type: application/json" -d '{"question":"Where live your favorite author", "answer":"China", "difficulty":"3", "category":"1", "searchTerm":"title"}' http://127.0.0.1:5000/questions
+
 ```
 {
   "current_category": null,
@@ -310,8 +314,8 @@ The API will return three error types when requests fail:
 ### DELETE '/questions/{question_id}'
 
 -	General:
-    o	Deletes the question of the given ID if it exists. Returns success value,  the id of the deleted question, questions list based on current page number to update the frontend and total question and total questions.
--	curl -X DELETE http://127.0.0.1:5000/questions/9
+    *	Deletes the question of the given ID if it exists. Returns success value,  the id of the deleted question, questions list based on current page number to update the frontend and total question and total questions.
+-	Sample: curl -X DELETE http://127.0.0.1:5000/questions/9
 
 ```
 {
@@ -416,7 +420,7 @@ The API will return three error types when requests fail:
     *	This endpoint to get questions to play the quiz. Takes category and previous question parameters  and return a random questions within the given category, if provided, and that is not one of the previous questions.
     *	Returns success value and random question
 
--	sample: curl -X POST -H "Content-Type: application/json" -d '{"previous_questions": [],"quiz_category": {"type":"Sport","id": "6"}}' http://127.0.0.1:5000/quizzes 
+-	Sample: curl -X POST -H "Content-Type: application/json" -d '{"previous_questions": [],"quiz_category": {"type":"Sport","id": "6"}}' http://127.0.0.1:5000/quizzes 
 
 ```
 {
