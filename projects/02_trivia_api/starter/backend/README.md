@@ -187,18 +187,18 @@ The API will return three error types when requests fail:
 }
 ```
 
-### POST /questions
+### POST '/questions'
 
-•	General:
-    o	This endpoint create new questions, which will require the question and answer text, category, and difficulty score.
-    o	Returns the success value, question list based on current page number to update the frontend, total         questions,  id of the current category.
-•	Extra:
-    o	Can receive an extra attribute it allow get questions based on a search term. 
-    o	It should return any questions for whom the search term is a substring of the question.
+-	General:
+    *	This endpoint create new questions, which will require the question and answer text, category, and difficulty score.
+    *	Returns the success value, question list based on current page number to update the frontend, total         questions,  id of the current category.
+-	Extra:
+    *	Can receive an extra attribute it allow get questions based on a search term. 
+    *	It should return any questions for whom the search term is a substring of the question.
 
-•	Without search term
+-	Without search term
 
-    o	Sample: curl -X POST -H "Content-Type: application/json" -d '{"question":"Where live your favorite author", "answer":"China", "difficulty":"3", "category":"1"}' http://127.0.0.1:5000/questions
+    *	Sample: curl -X POST -H "Content-Type: application/json" -d '{"question":"Where live your favorite author", "answer":"China", "difficulty":"3", "category":"1"}' http://127.0.0.1:5000/questions
 
 
 {
@@ -279,9 +279,9 @@ The API will return three error types when requests fail:
   "total_questions": 31
 }
 
-•	With search term
+-	With search term
 
-    o	curl -X POST -H "Content-Type: application/json" -d '{"question":"Where live your favorite author", "answer":"China", "difficulty":"3", "category":"1", "searchTerm":"title"}' http://127.0.0.1:5000/questions
+    *	curl -X POST -H "Content-Type: application/json" -d '{"question":"Where live your favorite author", "answer":"China", "difficulty":"3", "category":"1", "searchTerm":"title"}' http://127.0.0.1:5000/questions
 {
   "current_category": null,
   "questions": [
@@ -304,11 +304,11 @@ The API will return three error types when requests fail:
   "total_questions": 2
 }
 
-### DELETE /questions/{question_id}
+### DELETE '/questions/{question_id}'
 
-•	General:
+-	General:
     o	Deletes the question of the given ID if it exists. Returns success value,  the id of the deleted question, questions list based on current page number to update the frontend and total question and total questions.
-•	curl -X DELETE http://127.0.0.1:5000/questions/9
+-	curl -X DELETE http://127.0.0.1:5000/questions/9
 
 {
   "delete": 9,
@@ -387,10 +387,10 @@ The API will return three error types when requests fail:
   "success": true,
   "total_questions": 30
 
-### GET /categories
-•	General:
-    o	This endpoint should return a list of categories available and success value. 
-•	Sample: curl http://127.0.0.1:5000/categories
+### GET '/categories'
+-	General:
+    *	This endpoint should return a list of categories available and success value. 
+-	Sample: curl http://127.0.0.1:5000/categories
 {
   "categories": {
     "1": "Science",
@@ -403,7 +403,7 @@ The API will return three error types when requests fail:
   "success": true
 }
 
-### POST /quizzes
+### POST '/quizzes'
 
 -	General:
     *	This endpoint to get questions to play the quiz. Takes category and previous question parameters  and return a random questions within the given category, if provided, and that is not one of the previous questions.
