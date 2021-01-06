@@ -28,7 +28,7 @@ class TriviaTestCase(unittest.TestCase):
         # Test create_question    
         self.new_question = {
             'question': 'What is the best test? ',
-            'answer': 'El que se hace.',
+            'answer': 'The test done.',
             'category': 2,
             'difficulty': 3
         }
