@@ -200,7 +200,7 @@ The API will return three error types when requests fail:
 
     *	Sample: curl -X POST -H "Content-Type: application/json" -d '{"question":"Where live your favorite author", "answer":"China", "difficulty":"3", "category":"1"}' http://127.0.0.1:5000/questions
 
-
+```
 {
   "current_category": 1,
   "questions": [
@@ -278,10 +278,12 @@ The API will return three error types when requests fail:
   "success": true,
   "total_questions": 31
 }
+```
 
 -	With search term
 
     *	curl -X POST -H "Content-Type: application/json" -d '{"question":"Where live your favorite author", "answer":"China", "difficulty":"3", "category":"1", "searchTerm":"title"}' http://127.0.0.1:5000/questions
+```
 {
   "current_category": null,
   "questions": [
@@ -303,6 +305,7 @@ The API will return three error types when requests fail:
   "success": true,
   "total_questions": 2
 }
+```
 
 ### DELETE '/questions/{question_id}'
 
@@ -310,6 +313,7 @@ The API will return three error types when requests fail:
     o	Deletes the question of the given ID if it exists. Returns success value,  the id of the deleted question, questions list based on current page number to update the frontend and total question and total questions.
 -	curl -X DELETE http://127.0.0.1:5000/questions/9
 
+```
 {
   "delete": 9,
   "questions": [
@@ -386,11 +390,13 @@ The API will return three error types when requests fail:
   ],
   "success": true,
   "total_questions": 30
+```
 
 ### GET '/categories'
 -	General:
     *	This endpoint should return a list of categories available and success value. 
 -	Sample: curl http://127.0.0.1:5000/categories
+```
 {
   "categories": {
     "1": "Science",
@@ -402,6 +408,7 @@ The API will return three error types when requests fail:
   },
   "success": true
 }
+```
 
 ### POST '/quizzes'
 
@@ -411,6 +418,7 @@ The API will return three error types when requests fail:
 
 -	sample: curl -X POST -H "Content-Type: application/json" -d '{"previous_questions": [],"quiz_category": {"type":"Sport","id": "6"}}' http://127.0.0.1:5000/quizzes 
 
+```
 {
   "question": {
     "answer": "Uruguay",
@@ -421,7 +429,7 @@ The API will return three error types when requests fail:
   },
   "success": true
 }
-
+```
 
 ## Testing
 To run the tests, run
